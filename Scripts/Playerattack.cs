@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class Playerattack : MonoBehaviour
 {
-   [SerializeField] private float attackCooldown;
+   [SerializeField] private Transform firePoint;
+   [SerializeField] private GameObject[] Bala;
    private Animator anima;
    private NewBehaviourScript NewBehaviourScript;
+   [SerializeField] private float attackCooldown;
    private float cooldwontimer = 1000000000;
    private void Awake()
    {
@@ -13,7 +15,7 @@ public class Playerattack : MonoBehaviour
    }
    private void Update()
    {
-    if (Input.GetKey(KeyCode.Z))
+    if (Input.GetKey(KeyCode.Z) && cooldwontimer > attackCooldown)
     Attack();
     cooldwontimer += Time.deltaTime;
    }
@@ -21,5 +23,17 @@ public class Playerattack : MonoBehaviour
    {
     anima.SetTrigger("attack");
     cooldwontimer=0;
+
+    Bala[findBala()].transform.position=firePoint.position;
+    Bala[findBala()].GetComponent<Proyectil>().SetDireccion(Mathf.Sign(transform.localScale.x));
+   }
+   private int findBala()
+   {
+      for(int i =0;i<Bala.Length; i++)
+      {
+         if(!Bala[i].activeInHierarchy)
+         return i;
+      }
+      return 0;
    }
 }
